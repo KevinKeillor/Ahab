@@ -1,46 +1,60 @@
 ﻿using System;
 using System.IO;
 using System.ServiceModel.Web;
-using System.Drawing;
-using System.Drawing.Imaging;
+using System.Runtime.Serialization.Json;
+using System.Xml;
+using System.Text;
+using System.Collections.Generic;
 
 
 namespace AhabRestService
 {
     public class AhabService : IAhabService
 	{
-       // string userPath = "C:\\Users\\user\\AppData\\Roaming\\XBMC\\userdata\\Database\\";
-       // string VideoDatabase = "MyVideos60.db";
 
 
 		[WebGet(ResponseFormat = WebMessageFormat.Json,
 					UriTemplate = "movie/thumb/{id}")]
         public Stream GetMovieThumb(string id)
 		{
-            //Database bd = new Database(userPath + VideoDatabase);
-			// lookup person with the requested id 
-            
+            string userPath = "C:\\Users\\user\\AppData\\Roaming\\XBMC\\userdata\\Database\\";
+            string VideoDatabase = "MyVideos60.db";
 
-            System.Drawing.Image originalImg = System.Drawing.Image.FromFile(@"C:\Users\user\AppData\Roaming\XBMC\userdata\Thumbnails\9\9b979077.jpg");
-            float imgRatio = 0.6F;//originalImg.Width / originalImg.Height;
-            Image.GetThumbnailImageAbort thumbCallback = new Image.GetThumbnailImageAbort(ThumbnailCallback);
-            System.Drawing.Image thumbNailImg = originalImg.GetThumbnailImage((int)(120 * imgRatio), 120, thumbCallback, IntPtr.Zero);
-            originalImg.Dispose();
-            thumbNailImg.Save(@"C:\img.png");            
-            //FileStream stream = File.OpenRead(@"C:\img.png");
+            MovieDatabase MovieDB = new MovieDatabase();
+            MovieDB.SetDbSource(userPath + VideoDatabase);
+            MovieDB.SetThumbsPath("C:\\Users\\user\\AppData\\Roaming\\XBMC\\userdata\\Thumbnails\\Video\\");
+            MovieDB.Open();
+            Stream movieThumb = MovieDB.GetMovieThumb(Int32.Parse(id));
+            MovieDB.Close();
             WebOperationContext.Current.OutgoingResponse.ContentType = "image/jpeg";
-           // return stream as Stream;
-            var stream = new System.IO.MemoryStream();
-            thumbNailImg.Save(stream, ImageFormat.Png);
-            thumbNailImg.Dispose();
-            stream.Position = 0;
-            return stream;
+            return movieThumb;
 
 		}
 
-        private bool ThumbnailCallback()
+        [WebGet(ResponseFormat = WebMessageFormat.Json,
+                    UriTemplate = "movie/info/{id}")]
+        public String GetMovieInfoList()
         {
-            return false;
+            string userPath = "C:\\Users\\user\\AppData\\Roaming\\XBMC\\userdata\\Database\\";
+            string VideoDatabase = "MyVideos60.db";
+
+            MovieDatabase MovieDB = new MovieDatabase();
+            MovieDB.SetDbSource(userPath + VideoDatabase);
+            MovieDB.Open();
+            List<MovieInfo> list = MovieDB.GetMovieInfoList();
+            MovieDB.Close();
+            DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(MovieInfo));
+
+            MemoryStream ms = new MemoryStream();
+
+            XmlDictionaryWriter writer = JsonReaderWriterFactory.CreateJsonWriter(ms);
+
+            json.WriteObject(ms,list);
+
+            writer.Flush(); 
+
+            String jsonString = Encoding.Default.GetString(ms.GetBuffer());
+            return jsonString;
         }
 
 	}

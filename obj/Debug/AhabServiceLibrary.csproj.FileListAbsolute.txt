@@ -1,0 +1,8 @@
+C:\Dev\WcfServiceLibrary1\WcfServiceLibrary1\bin\Debug\AhabServiceLibrary.dll.config
+C:\Dev\WcfServiceLibrary1\WcfServiceLibrary1\bin\Debug\AhabServiceLibrary.dll
+C:\Dev\WcfServiceLibrary1\WcfServiceLibrary1\bin\Debug\AhabServiceLibrary.pdb
+C:\Dev\WcfServiceLibrary1\WcfServiceLibrary1\obj\Debug\ResolveAssemblyReference.cache
+C:\Dev\WcfServiceLibrary1\WcfServiceLibrary1\obj\Debug\AhabServiceLibrary.dll
+C:\Dev\WcfServiceLibrary1\WcfServiceLibrary1\obj\Debug\AhabServiceLibrary.pdb
+C:\Dev\WcfServiceLibrary1\WcfServiceLibrary1\bin\Debug\System.Data.SQLite.dll
+C:\Dev\WcfServiceLibrary1\WcfServiceLibrary1\bin\Debug\System.Data.SQLite.pdb
