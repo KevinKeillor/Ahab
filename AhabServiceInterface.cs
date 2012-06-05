@@ -1,5 +1,7 @@
 ﻿using System.ServiceModel;
 using System.IO;
+using System;
+using System.Collections.Generic;
 
 namespace AhabRestService
 {
@@ -8,5 +10,7 @@ namespace AhabRestService
     {
         [OperationContract]
         Stream GetMovieThumb(string id);
+        [OperationContract]
+        List<MovieSumary> GetMovieInfoList();
     }
 }

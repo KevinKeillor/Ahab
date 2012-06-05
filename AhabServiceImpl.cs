@@ -32,8 +32,8 @@ namespace AhabRestService
 		}
 
         [WebGet(ResponseFormat = WebMessageFormat.Json,
-                    UriTemplate = "movie/info/{id}")]
-        public String GetMovieInfoList()
+                    UriTemplate = "movie/info")]
+        public List<MovieSumary> GetMovieInfoList()
         {
             string userPath = "C:\\Users\\user\\AppData\\Roaming\\XBMC\\userdata\\Database\\";
             string VideoDatabase = "MyVideos60.db";
@@ -41,20 +41,10 @@ namespace AhabRestService
             MovieDatabase MovieDB = new MovieDatabase();
             MovieDB.SetDbSource(userPath + VideoDatabase);
             MovieDB.Open();
-            List<MovieInfo> list = MovieDB.GetMovieInfoList();
+            List<MovieSumary> list = MovieDB.GetMovieSummaryList();
             MovieDB.Close();
-            DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(MovieInfo));
 
-            MemoryStream ms = new MemoryStream();
-
-            XmlDictionaryWriter writer = JsonReaderWriterFactory.CreateJsonWriter(ms);
-
-            json.WriteObject(ms,list);
-
-            writer.Flush(); 
-
-            String jsonString = Encoding.Default.GetString(ms.GetBuffer());
-            return jsonString;
+            return list;
         }
 
 	}

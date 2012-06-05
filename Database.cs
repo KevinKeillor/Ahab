@@ -16,8 +16,14 @@ namespace AhabRestService
 
     {
         private
-            String m_DatabaseSource;
+        String m_DatabaseSource;
         String m_ThumbsPath;
+        String m_IdField = "idMovie";
+        String m_TitleField = "c00";
+        String m_YearField = "c07";
+        String m_GenreField = "c14";
+        String m_RuntimeField = "c11";
+        String m_TagField = "c03";
 
         public
         void SetDbSource(String databaseSource)
@@ -70,11 +76,40 @@ namespace AhabRestService
 
 
         public
-        List<MovieInfo> GetMovieInfoList()
+        List<MovieSumary> GetMovieSummaryList()
         {
             try
             {
-                List<MovieInfo> movieList = new List<MovieInfo> { };
+                List<MovieSumary> movieList = new List<MovieSumary> { };
+                String commandString = "SELECT " + m_IdField + ", " + m_TitleField + ", " + m_YearField + " , " + m_GenreField + ", " + m_RuntimeField + ", " + m_TagField + " FROM movie";
+
+                SQLiteCommand sqlCommand = new SQLiteCommand(commandString, (SQLiteConnection)m_Connection);
+                SQLiteDataReader reader = sqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    MovieSumary movieInfo = new MovieSumary { };
+                    // get the results of each column
+                    movieInfo.m_Id = ((Int64)reader[m_IdField]).ToString();
+                    movieInfo.m_Title = (String)reader[m_TitleField];
+                    movieInfo.m_Year = (String)reader[m_YearField];
+                    movieInfo.m_Genre = (String)reader[m_GenreField];
+
+                    int time = int.Parse((String)reader[m_RuntimeField]);
+                    TimeSpan span = System.TimeSpan.FromMinutes(time);
+                    int hours = (int)span.TotalHours;
+                    int minutes = span.Minutes;
+
+                    String Duration = "";
+                    if (hours > 0)               
+                        Duration += hours + "h ";
+
+                    Duration += minutes + "min";
+                    movieInfo.m_Runtime = Duration;
+                    movieInfo.m_Tagline = (String)reader[m_TagField];
+                    // Add the completed MovieSummary to the list
+                    movieList.Add(movieInfo);                    
+                }
+                movieList.
                 return movieList;
 
             }
