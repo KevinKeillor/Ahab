@@ -6,14 +6,8 @@ using System.Runtime.Serialization;
 
 namespace AhabRestService
 {
-    class MovieInfo : MovieSumary
-    {
-        public
-        String m_Director;
-    }
-
     [DataContract(Name = "Movie", Namespace = "AhabRestService")]
-    public class MovieSumary : IExtensibleDataObject
+    public class Artist : IExtensibleDataObject
     {
         // To implement the IExtensibleDataObject interface, you must also
         // implement the ExtensionData property.
@@ -30,34 +24,20 @@ namespace AhabRestService
             }
         }
 
-        // Movie Id
+        public Artist() {}
+
+        public Artist(int Id, String Name) {
+            m_Id = Id.ToString();
+            m_Name = Name;
+        }
+        // Artist Id
         [DataMember(Name = "I")]
         public
         String m_Id;
         // Movie name
         [DataMember(Name = "N")]
         public
-        String m_Title;
-        // release year 
-        [DataMember(Name = "Y")]
-        public
-        String m_Year;
-        // genre
-        [DataMember(Name = "G")]
-        public
-        String m_Genre;
-        // runtime
-        [DataMember(Name = "R")]
-        public
-        String m_Runtime;
-        // Tag a shortish descripiton
-        [DataMember(Name = "T")]
-        public
-        String m_Tagline;
-
-        // List of cast
-        [DataMember(Name = "C")]
-        public
-        List<Artist> m_CastList;
+        String m_Name;
     }
+
 }

@@ -47,5 +47,21 @@ namespace AhabRestService
             return list;
         }
 
+        [WebGet(ResponseFormat = WebMessageFormat.Json,
+                    UriTemplate = "movie/artist")]
+        public List<Artist> GetMovieArtistList()
+        {
+            string userPath = "C:\\Users\\user\\AppData\\Roaming\\XBMC\\userdata\\Database\\";
+            string VideoDatabase = "MyVideos60.db";
+
+            MovieDatabase MovieDB = new MovieDatabase();
+            MovieDB.SetDbSource(userPath + VideoDatabase);
+            MovieDB.Open();
+            List<Artist> list = MovieDB.GetMovieArtistList();
+            MovieDB.Close();
+
+            return list;
+        }
+
 	}
 }

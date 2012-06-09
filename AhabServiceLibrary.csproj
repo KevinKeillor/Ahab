@@ -50,6 +50,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Artist.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="AhabServiceInterface.cs" />
     <Compile Include="Movie.cs" />

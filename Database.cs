@@ -18,12 +18,16 @@ namespace AhabRestService
         private
         String m_DatabaseSource;
         String m_ThumbsPath;
+        // Movie info fields
         String m_IdField = "idMovie";
         String m_TitleField = "c00";
         String m_YearField = "c07";
         String m_GenreField = "c14";
         String m_RuntimeField = "c11";
         String m_TagField = "c03";
+        // Atrist info fields
+        String m_AtristIdField = "idActor";
+        String m_ArtistNameField = "strActor";
 
         public
         void SetDbSource(String databaseSource)
@@ -81,15 +85,22 @@ namespace AhabRestService
             try
             {
                 List<MovieSumary> movieList = new List<MovieSumary> { };
-                String commandString = "SELECT " + m_IdField + ", " + m_TitleField + ", " + m_YearField + " , " + m_GenreField + ", " + m_RuntimeField + ", " + m_TagField + " FROM movie";
+                String commandString = "SELECT movie." + m_IdField + ", movie." + m_TitleField + ", movie." + m_YearField +
+                    " , movie." + m_GenreField + ", movie." + m_RuntimeField + ", movie." + m_TagField + " ,actorlinkmovie.idActor ,actorlinkmovie.iOrder  ,actorlinkmovie.strRole FROM movie , actorlinkmovie " +
+                    "WHERE movie.idMovie = actorlinkmovie.idMovie "+
+                    "ORDER BY movie.idMovie, actorlinkmovie.iOrder ";               
 
                 SQLiteCommand sqlCommand = new SQLiteCommand(commandString, (SQLiteConnection)m_Connection);
                 SQLiteDataReader reader = sqlCommand.ExecuteReader();
-                while (reader.Read())
+                Int64 LastId = 0;
+                bool lRead = reader.Read();
+                while (lRead)
                 {
+                    
                     MovieSumary movieInfo = new MovieSumary { };
                     // get the results of each column
-                    movieInfo.m_Id = ((Int64)reader[m_IdField]).ToString();
+                    LastId = (Int64)reader[m_IdField];
+                    movieInfo.m_Id = LastId.ToString();
                     movieInfo.m_Title = (String)reader[m_TitleField];
                     movieInfo.m_Year = (String)reader[m_YearField];
                     movieInfo.m_Genre = (String)reader[m_GenreField];
@@ -106,10 +117,33 @@ namespace AhabRestService
                     Duration += minutes + "min";
                     movieInfo.m_Runtime = Duration;
                     movieInfo.m_Tagline = (String)reader[m_TagField];
+
+                    
+                    Int64 Id = (Int64)reader[m_IdField];
+                    movieInfo.m_CastList = new List<Artist> { };
+                    while(Id == LastId && lRead){                                                
+                        if (lRead)
+                        {
+                            Int64 ActorId = (Int64)reader["idActor"];
+                            String name = (String)reader["strRole"];
+                            movieInfo.m_CastList.Add(new Artist((int)ActorId, name));
+                            
+                        }
+
+                        if (reader.Read())
+                        {
+                            Id = (Int64)reader[m_IdField];
+                        }
+                        else
+                        {
+                            lRead = false;
+                        }
+
+                    }
                     // Add the completed MovieSummary to the list
-                    movieList.Add(movieInfo);                    
+                    movieList.Add(movieInfo);                                 
                 }
-                movieList.
+                //movieList.
                 return movieList;
 
             }
@@ -123,6 +157,37 @@ namespace AhabRestService
         private bool ThumbnailCallback()
         {
             return false;
+        }
+
+
+        public
+        List<Artist> GetMovieArtistList()
+        {
+            try
+            {
+                List<Artist> artistList = new List<Artist> { };
+                String commandString = "SELECT " + m_AtristIdField + ", " + m_ArtistNameField + " FROM actors";
+
+                SQLiteCommand sqlCommand = new SQLiteCommand(commandString, (SQLiteConnection)m_Connection);
+                SQLiteDataReader reader = sqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    Artist artist = new Artist { };
+                    // get the results of each column
+                    artist.m_Id = ((Int64)reader[m_AtristIdField]).ToString();
+                    artist.m_Name = (String)reader[m_ArtistNameField];
+
+                    artistList.Add(artist);
+                }
+                //artistList.
+                return artistList;
+
+            }
+            catch
+            {
+
+            }
+            return null;
         }
 
         public bool Open()
@@ -140,6 +205,8 @@ namespace AhabRestService
             return false;
         }
     }
+
+
 
 
     class SQLDatabase : Database
