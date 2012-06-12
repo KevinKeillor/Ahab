@@ -50,6 +50,7 @@ namespace AhabRestService
         [DataMember(Name = "R")]
         public
         String m_Runtime;
+
         // Tag a shortish descripiton
         [DataMember(Name = "T")]
         public
@@ -59,5 +60,27 @@ namespace AhabRestService
         [DataMember(Name = "C")]
         public
         List<Artist> m_CastList;
+
+        // Director
+        [DataMember(Name = "D")]
+        public
+        String m_Director;
+
+        // Writer
+        [DataMember(Name = "W")]
+        public
+        String m_Writer;
+
+        // Writer
+        [DataMember(Name = "P")]
+        public
+        String m_Plot;
+
+        // HD
+        [DataMember(Name = "H")]
+        public
+        String m_HD;
+
+
     }
 }

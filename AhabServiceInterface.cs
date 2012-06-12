@@ -18,5 +18,10 @@ namespace AhabRestService
         [OperationContract]
         List<Artist> GetMovieArtistList();
 
+        [OperationContract]
+        List<MovieSumary> UpdateMovieInfoList(String Id);
+        [OperationContract]
+        List<Artist> UpdateMovieArtistList(String Id);
+
     }
 }

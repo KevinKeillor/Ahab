@@ -63,5 +63,37 @@ namespace AhabRestService
             return list;
         }
 
+        [WebGet(ResponseFormat = WebMessageFormat.Json,
+                    UriTemplate = "movie/info/{Id}")]
+        public List<MovieSumary> UpdateMovieInfoList(String Id)
+        {
+            string userPath = "C:\\Users\\user\\AppData\\Roaming\\XBMC\\userdata\\Database\\";
+            string VideoDatabase = "MyVideos60.db";
+
+            MovieDatabase MovieDB = new MovieDatabase();
+            MovieDB.SetDbSource(userPath + VideoDatabase);
+            MovieDB.Open();
+            List<MovieSumary> list = MovieDB.GetMovieSummaryList();
+            MovieDB.Close();
+
+            return list;
+        }
+
+        [WebGet(ResponseFormat = WebMessageFormat.Json,
+                    UriTemplate = "movie/artist/{Id}")]
+        public List<Artist> UpdateMovieArtistList(String Id)
+        {
+            string userPath = "C:\\Users\\user\\AppData\\Roaming\\XBMC\\userdata\\Database\\";
+            string VideoDatabase = "MyVideos60.db";
+
+            MovieDatabase MovieDB = new MovieDatabase();
+            MovieDB.SetDbSource(userPath + VideoDatabase);
+            MovieDB.Open();
+            List<Artist> list = MovieDB.GetMovieArtistList();
+            MovieDB.Close();
+
+            return list;
+        }
+
 	}
 }
